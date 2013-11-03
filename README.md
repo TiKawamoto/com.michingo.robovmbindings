@@ -72,7 +72,7 @@ To implement google play game services in your game, follow these steps:
 	
 - link the bindings to your project. (Eclipse: mygame-ios -> build path -> configure build path... -> projects -> add)
 - Preview com.michingo.robovmbindings.playservices.Sample.java to see how to implement the services in your game.
-   Note: if you do not implement it in your app delegate, make the class in which you implement the services an extension of NSObject.
+   Note: if you do not implement it in your app delegate, make the class in which you implement the services extend NSObject.
 
    
 Thank you for using my bindings! Enjoy! :)
