@@ -48,8 +48,8 @@ public class Sample extends UIApplicationDelegate.Adapter{
 		gpgManager.provideAchievementIdentifiers(achievements);
 		
 		ArrayList<String> leaderboards = new ArrayList<String>();
-		achievements.add("xxx");
-		achievements.add("xxx");
+		leaderboards.add("xxx");
+		leaderboards.add("xxx");
 		gpgManager.provideLeaderboardIdentifiers(leaderboards);
 		
 		//(optional) tell the manager where you want to see your toasts
