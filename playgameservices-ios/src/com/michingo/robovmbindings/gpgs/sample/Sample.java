@@ -65,15 +65,15 @@ import com.michingo.robovmbindings.gt.GTMOAuth2Authentication;
 public class Sample extends UIApplicationDelegate.Adapter implements GPPSignInDelegate, GPGAchievementControllerDelegate, GPGLeaderboardControllerDelegate, GPGLeaderboardsControllerDelegate {
 	
 	//identifiers
-	static final String kClientId = "349069207524-m9oi4dh8okmdfqppfk975u6ub56l3a3m.apps.googleusercontent.com";
-	static final String ACH1 = "CgkI5M-VsZQKEAIQAQ";
-	static final String ACH2 = "CgkI5M-VsZQKEAIQAg";
-	static final String ACH3 = "CgkI5M-VsZQKEAIQAw";
-	static final String ACH4 = "CgkI5M-VsZQKEAIQBA";
-	static final String ACH5 = "CgkI5M-VsZQKEAIQBQ";
-	static final String ACH6 = "CgkI5M-VsZQKEAIQCA";
-	static final String LEAD1 = "CgkI5M-VsZQKEAIQBg";
-	static final String LEAD2 = "CgkI5M-VsZQKEAIQBw";
+	static final String kClientId = "xxx";
+	static final String ACH1 = "xxx";
+	static final String ACH2 = "xxx";
+	static final String ACH3 = "xxx";
+	static final String ACH4 = "xxx";
+	static final String ACH5 = "xxx";
+	static final String ACH6 = "xxx";
+	static final String LEAD1 = "xxx";
+	static final String LEAD2 = "xxx";
 	
 	//layout components
 	private UITextView tv;

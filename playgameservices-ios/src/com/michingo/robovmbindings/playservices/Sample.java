@@ -36,20 +36,20 @@ public class Sample extends UIApplicationDelegate.Adapter{
 		
 		
 		//pass all your identifiers to the manager
-		gpgManager.setClientId("349069207524-m9oi4dh8okmdfqppfk975u6ub56l3a3m.apps.googleusercontent.com");
+		gpgManager.setClientId("xxx");
 		
 		ArrayList<String> achievements = new ArrayList<String>();
-		achievements.add("CgkI5M-VsZQKEAIQAQ");
-		achievements.add("CgkI5M-VsZQKEAIQAg");
-		achievements.add("CgkI5M-VsZQKEAIQAw");
-		achievements.add("CgkI5M-VsZQKEAIQBA");
-		achievements.add("CgkI5M-VsZQKEAIQBQ");
-		achievements.add("CgkI5M-VsZQKEAIQCA");
+		achievements.add("xxx");
+		achievements.add("xxx");
+		achievements.add("xxx");
+		achievements.add("xxx");
+		achievements.add("xxx");
+		achievements.add("xxx");
 		gpgManager.provideAchievementIdentifiers(achievements);
 		
 		ArrayList<String> leaderboards = new ArrayList<String>();
-		achievements.add("CgkI5M-VsZQKEAIQBg");
-		achievements.add("CgkI5M-VsZQKEAIQBw");
+		achievements.add("xxx");
+		achievements.add("xxx");
 		gpgManager.provideLeaderboardIdentifiers(leaderboards);
 		
 		//(optional) tell the manager where you want to see your toasts
