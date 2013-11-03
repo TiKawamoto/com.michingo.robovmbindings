@@ -37,12 +37,15 @@ To implement google play game services in your game, follow these steps:
   	<lib>libs/ios/GoogleOpenSource.a</lib>
   	<lib>libs/ios/PlayGameServices.a</lib>
 - Place PlayGameServices.bundle in your project and link it in robovm.xml
+	
 	<resource>
       <directory>resources</directory>
       <skipPngCrush>true</skipPngCrush>
     </resource>
+	
 - Add the frameworks of the bindings to your game as well.
 - Add this to your info.plist.xml
+	
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -58,6 +61,7 @@ To implement google play game services in your game, follow these steps:
 	</array>
 	<key>GPGApplicationID</key>
 	<string>xxxxxxxxxxxxx</string>
+	
 - link the bindings to your project. (Eclipse: mygame-ios -> build path -> configure build path... -> projects -> add)
 - Preview com.michingo.robovmbindings.playservices.Sample.java to see how to implement the services in your game.
    Note: if you do not implement it in your app delegate, make the class in which you implement the services an extension of NSObject.
