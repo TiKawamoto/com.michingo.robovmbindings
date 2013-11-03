@@ -30,19 +30,19 @@ There are only a minority of problems:
 - Because NSData is not implemented, I could not test a few classes related to cloud saving, so there might be bugs there.
 
 To implement google play game services in your game, follow these steps:
-1) Create an entry for your game in the Google Play Developer Console.
+- Create an entry for your game in the Google Play Developer Console.
    It is a good idea to read this: https://developers.google.com/games/services/ios/quickstart
-2) Copy the libraries in the 'libs' folder to your game and place them in robovm.xml
+- Copy the libraries in the 'libs' folder to your game and place them in robovm.xml
 	<lib>libs/ios/GooglePlus.a</lib>
   	<lib>libs/ios/GoogleOpenSource.a</lib>
   	<lib>libs/ios/PlayGameServices.a</lib>
-3) Place PlayGameServices.bundle in your project and link it in robovm.xml
+- Place PlayGameServices.bundle in your project and link it in robovm.xml
 	<resource>
       <directory>resources</directory>
       <skipPngCrush>true</skipPngCrush>
     </resource>
-4) Add the frameworks of the bindings to your game as well.
-5) Add this to your info.plist.xml
+- Add the frameworks of the bindings to your game as well.
+- Add this to your info.plist.xml
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -58,8 +58,8 @@ To implement google play game services in your game, follow these steps:
 	</array>
 	<key>GPGApplicationID</key>
 	<string>xxxxxxxxxxxxx</string>
-6) link the bindings to your project. (Eclipse: mygame-ios -> build path -> configure build path... -> projects -> add)
-7) Preview com.michingo.robovmbindings.playservices.Sample.java to see how to implement the services in your game.
+- link the bindings to your project. (Eclipse: mygame-ios -> build path -> configure build path... -> projects -> add)
+- Preview com.michingo.robovmbindings.playservices.Sample.java to see how to implement the services in your game.
    Note: if you do not implement it in your app delegate, make the class in which you implement the services an extension of NSObject.
 
    
