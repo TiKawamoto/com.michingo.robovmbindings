@@ -6,7 +6,7 @@ import org.robovm.rt.bro.ValuedEnum;
  * @author Michael Hadash */
 
 public enum GPGLeaderboardTimeScope implements ValuedEnum{
-	GPGLeaderboardTimeScopeUnknown(0),
+	GPGLeaderboardTimeScopeUnknown(-1),
 	GPGLeaderboardTimeScopeToday(1),
 	GPGLeaderboardTimeScopeThisWeek(2),
 	GPGLeaderboardTimeScopeAllTime(3);

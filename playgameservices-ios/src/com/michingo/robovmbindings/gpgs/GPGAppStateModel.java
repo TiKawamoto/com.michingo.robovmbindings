@@ -1,6 +1,6 @@
 package com.michingo.robovmbindings.gpgs;
 
-import org.robovm.cocoatouch.foundation.NSData;
+import com.michingo.robovmbindings.other.NSData;
 import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.objc.ObjCClass;

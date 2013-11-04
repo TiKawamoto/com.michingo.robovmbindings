@@ -6,9 +6,9 @@ import org.robovm.rt.bro.ValuedEnum;
  * @author Michael Hadash */
 
 public enum GPGLeaderboardOrder implements ValuedEnum{
-	GPGLeaderboardOrderUnknown(0),
-	GPGLeaderboardOrderLargerIsBetter(1),
-	GPGLeaderboardOrderSmallerIsBetter(2);
+	GPGLeaderboardOrderUnknown(-1),
+	GPGLeaderboardOrderLargerIsBetter(0),
+	GPGLeaderboardOrderSmallerIsBetter(1);
 
     private final int n;
 

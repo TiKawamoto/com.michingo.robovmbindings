@@ -1,13 +1,14 @@
 package com.michingo.robovmbindings.gpgs.sample;
 
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.robovm.cocoatouch.coregraphics.CGRect;
 import org.robovm.cocoatouch.foundation.NSArray;
 import org.robovm.cocoatouch.foundation.NSAutoreleasePool;
-import org.robovm.cocoatouch.foundation.NSData;
+import com.michingo.robovmbindings.other.NSData;
 import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;
@@ -589,7 +590,9 @@ public class Sample extends UIApplicationDelegate.Adapter implements GPPSignInDe
 		int playerAvatarKey = 2;//the state number. use 0 to 3.
 		
 		//add the data that you wish to save
-		NSData newAvatarData = new NSData();//add data that you wist to upload.
+		ByteBuffer b = ByteBuffer.allocate(5);
+		b.put(new byte[]{1, 2, 3, 4, 5});
+		NSData newAvatarData = new NSData(b);//add data that you wist to upload.
 		//(NOTE: NSData is not implemented by robovm, so you can't actually add data until it is implemented.)
 		model.setStateData(newAvatarData, playerAvatarKey);
 		
@@ -643,7 +646,11 @@ public class Sample extends UIApplicationDelegate.Adapter implements GPPSignInDe
 					case GPGAppStateLoadStatusSuccess:
 						System.out.println("cloud load succeeded");
 						NSData savegame = model.stateDataForKey(playerAvatarKey);
-						//convert the data and pass it to your game here.
+						ByteBuffer savegameBB = savegame.getBytes();
+						System.out.print("Received savegame: ");
+						for(int i=0;i<savegameBB.capacity();i++){
+							System.out.print(savegameBB.get(i)+((i==savegameBB.capacity()-1)?"":", "));
+						}
 						break;
 				}
 			}

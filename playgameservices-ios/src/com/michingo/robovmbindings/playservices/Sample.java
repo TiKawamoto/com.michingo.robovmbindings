@@ -14,6 +14,7 @@ import org.robovm.cocoatouch.uikit.UIWindow;
 
 import com.michingo.robovmbindings.gpgs.GPGToastPlacement;
 import com.michingo.robovmbindings.gpp.GPPURLHandler;
+import com.michingo.robovmbindings.playservices.PlayServicesManager.LoginSucceeded;
 
 public class Sample extends UIApplicationDelegate.Adapter{
 	
@@ -21,6 +22,13 @@ public class Sample extends UIApplicationDelegate.Adapter{
 	private UIWindow window;
 	private UIViewController viewController;
 	private UIView view;
+	
+	private LoginSucceeded loginCallback = new LoginSucceeded(){
+		@Override
+		public void invoke() {
+			//load savegame from the cloud, load achievement list etc...
+		}
+    };
 	
 	@Override
 	public void didFinishLaunching(UIApplication application) {
@@ -60,6 +68,9 @@ public class Sample extends UIApplicationDelegate.Adapter{
 		
 		//tell the manager what your root view controller is.
 		gpgManager.setViewController(viewController);
+		
+		//set the callback
+		gpgManager.setLoginCallback(loginCallback);
 		
 		//call the manager's didFinishLaunching method.
 		gpgManager.didFinishLaunching();

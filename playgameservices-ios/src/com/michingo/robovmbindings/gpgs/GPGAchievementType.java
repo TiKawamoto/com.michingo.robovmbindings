@@ -7,7 +7,7 @@ import org.robovm.rt.bro.ValuedEnum;
 
 //note: these are correct
 public enum GPGAchievementType implements ValuedEnum{
-	GPGAchievementTypeUnknown(2),
+	GPGAchievementTypeUnknown(-1),
 	GPGAchievementTypeStandard(0),
 	GPGAchievementTypeIncremental(1);
 

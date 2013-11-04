@@ -3,7 +3,7 @@ package com.michingo.robovmbindings.playservices;
 import java.util.ArrayList;
 
 import org.robovm.cocoatouch.foundation.NSArray;
-import org.robovm.cocoatouch.foundation.NSData;
+import com.michingo.robovmbindings.other.NSData;
 import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
@@ -73,6 +73,13 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	private boolean fetchName = false;
 	private boolean fetchEmail = false;
 	private boolean fetchId = true;
+	
+	/** interface to get a callback when the login finished. */
+	public interface LoginSucceeded{
+		public void invoke();
+	};
+	
+	private LoginSucceeded loginSuccess;
 	
 	/** Call this in your app's didFinishLaunching() method. You must specify your clientID and, if you need user data, what data to load during login before calling this. */
 	public void didFinishLaunching(){
@@ -150,6 +157,11 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 			
 			//after the google+ sign-in is done, we must continue the sign-in of 'games'.
 			startGoogleGamesSignIn();
+			
+			//invoke the callback if it is set.
+			if (loginSuccess != null){
+				loginSuccess.invoke();
+			}
 		}else{
 			System.out.println("error during login: "+error.description());
 		}
@@ -197,6 +209,19 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	/** Logs you in into Google Play Game Services using the 'games' and 'appstate' scopes. 
 	 * Only call this when the user pressed a designated login button. */
 	public void login(){
+		GPPSignIn.sharedInstance().authenticate();
+	}
+	
+	/** Sets a callback that will be invoked when the user is logged in successfully.
+	 * @param callback the callback. */
+	public void setLoginCallback(LoginSucceeded callback){
+		loginSuccess = callback;
+	}
+	
+	/** Logs you in into Google Play Game Services using the 'games' and 'appstate' scopes. 
+	 * Only call this when the user pressed a designated login button. */
+	public void login(LoginSucceeded callback){
+		loginSuccess = callback;
 		GPPSignIn.sharedInstance().authenticate();
 	}
 	
@@ -284,7 +309,12 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		//obtain the data and put it in a list
 		ArrayList<GPGAchievementMetadata> list = new ArrayList<GPGAchievementMetadata>();
 		for(int i=0;i<ach_ids.size();i++){
-			list.add(model.metadataForAchievementId(ach_ids.get(i)));
+			GPGAchievementMetadata data = model.metadataForAchievementId(ach_ids.get(i));
+			if (data != null){
+				list.add(data);
+			}else{
+				System.out.println("[Warning] PlayServicesManager: One of your achievements could not be listed.");
+			}
 		}
 		
 		//return the list
@@ -470,7 +500,7 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	 * @param social whether you want social or global scores.
 	 * @param timeScope the time scopes where you want the scores for.
 	 * @param block the completion handler. This block is invoked when the scores are received. */
-	public void getScoresOfLeaderoard(String leaderboardId, boolean social, GPGLeaderboardTimeScope timeScope, GPGLeaderboardLoadScoresBlock block){
+	public void getScoresOfLeaderboard(String leaderboardId, boolean social, GPGLeaderboardTimeScope timeScope, GPGLeaderboardLoadScoresBlock block){
 		
 		//create the leaderboard class
 		GPGLeaderboard b = new GPGLeaderboard(leaderboardId);
