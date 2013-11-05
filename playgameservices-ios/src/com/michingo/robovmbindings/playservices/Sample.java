@@ -18,7 +18,7 @@ import com.michingo.robovmbindings.playservices.PlayServicesManager.LoginSucceed
 
 public class Sample extends UIApplicationDelegate.Adapter{
 	
-	private PlayServicesManager gpgManager = new PlayServicesManager();
+	private PlayServicesManager gpgManager;
 	private UIWindow window;
 	private UIViewController viewController;
 	private UIView view;
@@ -42,7 +42,7 @@ public class Sample extends UIApplicationDelegate.Adapter{
 		viewController.setView(view);
         window.setRootViewController(viewController);
 		
-		
+		gpgManager = new PlayServicesManager();
 		//pass all your identifiers to the manager
 		gpgManager.setClientId("xxx");
 		
