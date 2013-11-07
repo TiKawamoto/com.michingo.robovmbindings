@@ -592,7 +592,7 @@ public class Sample extends UIApplicationDelegate.Adapter implements GPPSignInDe
 		//add the data that you wish to save
 		ByteBuffer b = ByteBuffer.allocate(5);
 		b.put(new byte[]{1, 2, 3, 4, 5});
-		NSData newAvatarData = new NSData(b);//add data that you wist to upload.
+		NSData newAvatarData = NSData.createFromByteBuffer(b);//add data that you wist to upload.
 		//(NOTE: NSData is not implemented by robovm, so you can't actually add data until it is implemented.)
 		model.setStateData(newAvatarData, playerAvatarKey);
 		

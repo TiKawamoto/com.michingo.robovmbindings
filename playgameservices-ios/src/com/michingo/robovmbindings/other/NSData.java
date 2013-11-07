@@ -21,90 +21,39 @@ public class NSData extends NSObject{
 		ObjCRuntime.bind(NSData.class);
 	}
 	
-	private BytePtr pointer;
-	
 	//- (NSUInteger)length;
 	private static final Selector length$ = Selector.register("length");
-	@Bridge private native static int objc_length(NSData __self__, Selector __cmd__);
+	@Bridge private native static long objc_length(NSData __self__, Selector __cmd__);
 	public int length() {
-		return objc_length(this, length$);
+		return (int) objc_length(this, length$);
 	}
 	
 	//- (const void *)bytes NS_RETURNS_INNER_POINTER;
 	private static final Selector bytes$ = Selector.register("bytes");
 	@Bridge private native static VoidPtr objc_bytes(NSData __self__, Selector __cmd__);
-	public ByteBuffer getBytes2() {
+	public ByteBuffer getBytes() {
 		VoidPtr p = objc_bytes(this, bytes$);
 		BytePtr b = p.as(BytePtr.class);
-		return b.asByteBuffer(length());
+		return b.asByteBuffer((int)length());
 	}
 	
-	//- (id)initWithBytes:(const void *)bytes length:(NSUInteger)length;
-	private static final Selector initWithBytes$ = Selector.register("initWithBytes:length:");
-	@Bridge private native static NSData objc_initWithBytes(NSData __self__, Selector __cmd__, VoidPtr bytes, int length);
-	public NSData(final ByteBuffer buffer) {
+	//+ (id)dataWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)b;
+	private static final Selector dataWithBytes$free = Selector.register("dataWithBytesNoCopy:length:freeWhenDone:");
+	@Bridge private native static NSData objc_dataWithBytesFree(ObjCClass __self__, Selector __cmd__, VoidPtr bytes, long length, boolean freeWhenDone);
+	public static NSData createFromByteBuffer(final ByteBuffer buffer) {
 		
-		//free the old pointer
-		free();
-		
-		//allocate memory and create a new pointer
-		pointer = Struct.malloc(BytePtr.class, buffer.capacity());
-		
-		//create a buffer that handles the exact same memory as the pointer
-		ByteBuffer bufTemp = pointer.asByteBuffer(buffer.capacity());
-		
-		//reset buffer positions
+		BytePtr b = Struct.malloc(BytePtr.class, buffer.capacity());
+		ByteBuffer buffer2 = b.asByteBuffer(buffer.capacity());
 		buffer.position(0);
-		bufTemp.position(0);
-		
-		//copies the data of the buffer to the pointer using the temporary buffer.
-		bufTemp.put(buffer);
+		buffer2.clear();
+		buffer2.put(buffer);
 		
 		//call the objective-c class. Converts the pointer to a void pointer since this class requires a (const void *)
-		objc_initWithBytes(this, initWithBytes$, pointer.as(VoidPtr.class), buffer.capacity());
-	}
-	
-	//- (void)getBytes:(void *)buffer length:(NSUInteger)length;
-	private static final Selector getBytes$ = Selector.register("getBytes:length:");
-	@Bridge private native static void objc_getBytes(NSData __self__, Selector __cmd__, VoidPtr buffer, int length);
-	public ByteBuffer getBytes() {
-		
-		//get the length of the data
-		int len = length();
-		
-		//create a new void pointer and allocate memory
-		VoidPtr p = Struct.malloc(VoidPtr.class, len);
-		
-		//call the objective-c class. This writes the bytes to the pointer's memory
-		objc_getBytes(this, getBytes$, p, len);
-		
-		//convert the void pointer to a byte pointer
-		BytePtr b = p.as(BytePtr.class);
-		
-		//create a ByteBuffer that handles the data of the pointer.
-		ByteBuffer bufPointer = b.asByteBuffer(len);
-		
-		//create another buffer
-		ByteBuffer bufOther = ByteBuffer.allocate(len);
-		
-		//reset buffer positions
-		bufPointer.position(0);
-		bufOther.position(0);
-		
-		//copy the data from the pointer to this buffer.
-		bufOther.put(bufPointer);
-		
-		//free the memory used by the pointer
-		p.free();
-		
-		//return the newly created buffer
-		return bufOther;
+		return objc_dataWithBytesFree(objCClass, dataWithBytes$free, b.as(VoidPtr.class), (long)buffer.capacity(), true);
 	}
 	
 	public void free(){
-		if (pointer!=null){
-			pointer.free();
-			pointer = null;
-		}
+		VoidPtr p = objc_bytes(this, bytes$);
+		p.free();
 	}
 }

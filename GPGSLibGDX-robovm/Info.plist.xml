@@ -60,16 +60,16 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>xxx</string>
+			<string>com.michingo.robovmbindings.gpgs</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>xxx</string>
+				<string>com.michingo.robovmbindings.gpgs</string>
 			</array>
 			<key>CFBundleURLTypes</key>
 			<string>Editor</string>
 		</dict>
 	</array>
 	<key>GPGApplicationID</key>
-    <string>xxx</string>
+    <string>349069207524</string>
 </dict>
 </plist>
