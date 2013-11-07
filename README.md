@@ -25,9 +25,6 @@ Therefore I made bindings for the ENTIRE sdk. This includes:
 
 Aside the bindings, I make a simple to use PlayServicesManager. This manager contains very simple methods to perform the tasks listed above.
 
-There are only a minority of problems:
-- NSData is not implemented by robovm. This is a problem, because saving/loading data REQUIRES usage of NSData.
-- Because NSData is not implemented, I could not test a few classes related to cloud saving, so there might be bugs there.
 
 To implement google play game services in your game, follow these steps:
 - Create an entry for your game in the Google Play Developer Console.
