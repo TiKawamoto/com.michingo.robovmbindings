@@ -35,6 +35,7 @@ public class Sample extends UIApplicationDelegate.Adapter{
 		
 		//create a simple window, view controller and view
 		//in a libGDX game you do this differently
+		gpgManager = new PlayServicesManager();
 		window = new UIWindow(UIScreen.getMainScreen().getBounds());
         window.makeKeyAndVisible();
         viewController = new UIViewController();
@@ -42,22 +43,23 @@ public class Sample extends UIApplicationDelegate.Adapter{
 		viewController.setView(view);
         window.setRootViewController(viewController);
 		
-		gpgManager = new PlayServicesManager();
+		
 		//pass all your identifiers to the manager
-		gpgManager.setClientId("xxx");
+		gpgManager.setClientId("349069207524-m9oi4dh8okmdfqppfk975u6ub56l3a3m.apps.googleusercontent.com");
+
 		
 		ArrayList<String> achievements = new ArrayList<String>();
-		achievements.add("xxx");
-		achievements.add("xxx");
-		achievements.add("xxx");
-		achievements.add("xxx");
-		achievements.add("xxx");
-		achievements.add("xxx");
+		achievements.add("CgkI5M-VsZQKEAIQAQ");
+		achievements.add("CgkI5M-VsZQKEAIQAg");
+		achievements.add("CgkI5M-VsZQKEAIQAw");
+		achievements.add("CgkI5M-VsZQKEAIQBA");
+		achievements.add("CgkI5M-VsZQKEAIQBQ");
+		achievements.add("CgkI5M-VsZQKEAIQCA");
 		gpgManager.provideAchievementIdentifiers(achievements);
 		
 		ArrayList<String> leaderboards = new ArrayList<String>();
-		leaderboards.add("xxx");
-		leaderboards.add("xxx");
+		leaderboards.add("CgkI5M-VsZQKEAIQBg");
+		leaderboards.add("CgkI5M-VsZQKEAIQBw");
 		gpgManager.provideLeaderboardIdentifiers(leaderboards);
 		
 		//(optional) tell the manager where you want to see your toasts
