@@ -66,7 +66,7 @@ import com.michingo.robovmbindings.gt.GTMOAuth2Authentication;
 public class Sample extends UIApplicationDelegate.Adapter implements GPPSignInDelegate, GPGAchievementControllerDelegate, GPGLeaderboardControllerDelegate, GPGLeaderboardsControllerDelegate {
 	
 	//identifiers
-	static final String kClientId = "xxx";
+	static final String kClientId = "349069207524-m9oi4dh8okmdfqppfk975u6ub56l3a3m.apps.googleusercontent.com";
 	static final String ACH1 = "xxx";
 	static final String ACH2 = "xxx";
 	static final String ACH3 = "xxx";

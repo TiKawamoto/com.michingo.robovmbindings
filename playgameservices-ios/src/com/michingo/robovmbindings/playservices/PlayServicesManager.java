@@ -8,6 +8,7 @@ import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
 import org.robovm.cocoatouch.uikit.UIViewController;
+import org.robovm.objc.ObjCClass;
 
 import com.michingo.robovmbindings.gpgs.GPGAchievement;
 import com.michingo.robovmbindings.gpgs.GPGAchievementController;
@@ -74,12 +75,44 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	private boolean fetchEmail = false;
 	private boolean fetchId = true;
 	
+	//used to fix a RoboVM bug with NSArray
+	static{
+		ObjCClass.getByType(GPGAchievementMetadata.class);
+		ObjCClass.getByType(GPGLeaderboardMetadata.class);
+		ObjCClass.getByType(GPGScore.class);
+	}
+	
 	/** interface to get a callback when the login finished. */
 	public interface LoginSucceeded{
 		public void invoke();
 	};
 	
+	/** interface to get a callback when the scores have loaded. */
+	public interface ScoresLoaded{
+		public void invoke(ArrayList<GPGScore> scores);
+	};
+	
+	private GPGLeaderboardLoadScoresBlock loadScoresBlock = new GPGLeaderboardLoadScoresBlock(){
+		@Override
+		public void invoke(NSArray<GPGScore> scores, NSError error) {
+			if (error != null){
+				System.out.println("[Error] PlayServicesManager: An error occured while loading the scores: "+error.description());
+				return;
+			}
+			
+			//convert to an ArrayList
+			ArrayList<GPGScore> list = new ArrayList<GPGScore>();
+			for (int i=0;i<scores.size();i++){
+				list.add(scores.get(i));
+			}
+			
+			//invoke the callback
+			scoresLoaded.invoke(list);
+		}
+	};
+	
 	private LoginSucceeded loginSuccess;
+	private ScoresLoaded scoresLoaded;
 	
 	/** Call this in your app's didFinishLaunching() method. You must specify your clientID and, if you need user data, what data to load during login before calling this. */
 	public void didFinishLaunching(){
@@ -243,13 +276,17 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	}
 	
 	/** Call this to pass your achievement identifiers. 
-	 * @param achievements an ArrayList containing your identifiers. You can find the identifiers in the Google Play Developers Console. */
+	 * @param achievements an ArrayList containing your identifiers. You can find the identifiers in the Google Play Developers Console. 
+	 * @deprecated you no longer need to pass identifiers. */
+	@Deprecated
 	public void provideAchievementIdentifiers(ArrayList<String> achievements){
 		this.ach_ids = achievements;
 	}
 	
 	/** Call this to pass your leaderboard identifiers. 
-	 * @param achievements an ArrayList containing your identifiers. You can find the identifiers in the Google Play Developers Console. */
+	 * @param achievements an ArrayList containing your identifiers. You can find the identifiers in the Google Play Developers Console. 
+	 * @deprecated you no longer need to pass identifiers. */
+	@Deprecated
 	public void provideLeaderboardIdentifiers(ArrayList<String> leaderboards){
 		this.lead_ids = leaderboards;
 	}
@@ -308,10 +345,11 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		
 		//obtain the data and put it in a list
 		ArrayList<GPGAchievementMetadata> list = new ArrayList<GPGAchievementMetadata>();
-		for(int i=0;i<ach_ids.size();i++){
-			GPGAchievementMetadata data = model.metadataForAchievementId(ach_ids.get(i));
-			if (data != null){
-				list.add(data);
+		NSArray<GPGAchievementMetadata> dat = model.allMetadata();
+		for(int i=0;i<dat.size();i++){
+			GPGAchievementMetadata n = dat.get(i);
+			if (n != null){
+				list.add(n);
 			}else{
 				System.out.println("[Warning] PlayServicesManager: One of your achievements could not be listed.");
 			}
@@ -487,8 +525,14 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		
 		//obtain the data and put it in a list
 		ArrayList<GPGLeaderboardMetadata> list = new ArrayList<GPGLeaderboardMetadata>();
-		for(int i=0;i<lead_ids.size();i++){
-			list.add(model.metadataForLeaderboardId(lead_ids.get(i)));
+		NSArray<GPGLeaderboardMetadata> dat = model.allMetadata();
+		for(int i=0;i<dat.size();i++){
+			GPGLeaderboardMetadata n = dat.get(i);
+			if (n != null){
+				list.add(n);
+			}else{
+				System.out.println("[Warning] PlayServicesManager: One of your leaderboards could not be listed.");
+			}
 		}
 		
 		//return the list
@@ -499,17 +543,20 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	 * @param leaderboardId the leaderboard identifier.
 	 * @param social whether you want social or global scores.
 	 * @param timeScope the time scopes where you want the scores for.
-	 * @param block the completion handler. This block is invoked when the scores are received. */
-	public void getScoresOfLeaderboard(String leaderboardId, boolean social, GPGLeaderboardTimeScope timeScope, GPGLeaderboardLoadScoresBlock block){
+	 * @param callback the completion handler. This is invoked when the scores are received. */
+	public void getScoresOfLeaderboard(String leaderboardId, boolean social, GPGLeaderboardTimeScope timeScope, ScoresLoaded callback){
+		
+		//set the callback
+		scoresLoaded = callback;
 		
 		//create the leaderboard class
-		GPGLeaderboard b = new GPGLeaderboard(leaderboardId);
+		GPGLeaderboard b = GPGLeaderboard.leaderboardWithId(leaderboardId);
 		
 		//set options
 		b.setSocial(social);
 		b.setTimeScope(timeScope);
 		
 		//load the scores
-		b.loadScoresWithCompletionHandler(block);
+		b.loadScoresWithCompletionHandler(loadScoresBlock);
 	}
 }

@@ -15,10 +15,11 @@ public interface GPGLeaderboardLoadScoresBlock {
   /**
    * Runs this block.
    */
-  void invoke(NSArray scores, NSError error);
+  void invoke(NSArray<GPGScore> scores, NSError error);
   
   static class Callbacks {
-      @Callback static void run(ObjCBlock block, NSArray scores, NSError error) {
+      @Callback static void run(ObjCBlock block, NSArray<GPGScore> scores, NSError error) {
+    	  GPGScore.class.getName();//TODO: test this
           ((GPGLeaderboardLoadScoresBlock) block.object()).invoke(scores, error);
       }
   }

@@ -10,33 +10,32 @@ import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIApplication;
-import org.robovm.cocoatouch.uikit.UIScreen;
-import org.robovm.cocoatouch.uikit.UIView;
-import org.robovm.cocoatouch.uikit.UIViewController;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 import org.robovm.cocoatouch.glkit.GLKViewDrawableStencilFormat;
 
+import com.michingo.robovmbindings.gpgs.GPGAchievementMetadata;
 import com.michingo.robovmbindings.gpgs.GPGAppStateConflictHandler;
 import com.michingo.robovmbindings.gpgs.GPGAppStateLoadResultHandler;
 import com.michingo.robovmbindings.gpgs.GPGAppStateLoadStatus;
 import com.michingo.robovmbindings.gpgs.GPGAppStateModel;
 import com.michingo.robovmbindings.gpgs.GPGAppStateWriteResultHandler;
 import com.michingo.robovmbindings.gpgs.GPGAppStateWriteStatus;
+import com.michingo.robovmbindings.gpgs.GPGLeaderboardMetadata;
+import com.michingo.robovmbindings.gpgs.GPGLeaderboardTimeScope;
 import com.michingo.robovmbindings.gpgs.GPGManager;
 import com.michingo.robovmbindings.gpgs.GPGToastPlacement;
 import com.michingo.robovmbindings.gpp.GPPURLHandler;
 import com.michingo.robovmbindings.other.NSData;
 import com.michingo.robovmbindings.playservices.PlayServicesManager;
 import com.michingo.robovmbindings.playservices.PlayServicesManager.LoginSucceeded;
+import com.michingo.robovmbindings.playservices.PlayServicesManager.ScoresLoaded;
 
 public class RobovmLauncher extends IOSApplication.Delegate implements GPGSInterface{
 	private IOSApplication gdxApp;
     private PlayServicesManager manager;
-    private UIViewController managerViewController;
-    private UIView managerView;
     private MyGame game;
     
     /** Option: do you want to load the savegame after login? */
@@ -44,8 +43,6 @@ public class RobovmLauncher extends IOSApplication.Delegate implements GPGSInter
 
     //enter your identifiers
     private final String clientID = "349069207524-m9oi4dh8okmdfqppfk975u6ub56l3a3m.apps.googleusercontent.com";
-    private final String leaderboard1_ID = "CgkI5M-VsZQKEAIQAQ";
-    private final String achievement1_ID = "CgkI5M-VsZQKEAIQAg";
 	
 
     @Override
@@ -68,25 +65,9 @@ public class RobovmLauncher extends IOSApplication.Delegate implements GPGSInter
     public boolean didFinishLaunching(UIApplication application, NSDictionary launchOptions) {
             final boolean result = super.didFinishLaunching(application, launchOptions);
 
-            { // GameServices manager view
-                    managerView = new UIView(UIScreen.getMainScreen().getBounds());
-                    managerViewController = new UIViewController();
-                    managerViewController.setView(managerView);
-
-                    gdxApp.getUIViewController().getView().addSubview(managerView);
-            }
-
-            final ArrayList<String> achievements = new ArrayList<String>();
-            achievements.add(achievement1_ID);
-
-            final ArrayList<String> leaderboards = new ArrayList<String>();
-            leaderboards.add(leaderboard1_ID);
-
             manager = new PlayServicesManager();
             manager.setClientId(clientID);
-            manager.setViewController(managerViewController);
-            manager.provideAchievementIdentifiers(achievements);
-            manager.provideLeaderboardIdentifiers(leaderboards);
+            manager.setViewController(gdxApp.getUIViewController());
             manager.setToastLocation(PlayServicesManager.TOAST_BOTH, GPGToastPlacement.GPGToastPlacementTop);
             manager.setUserDataToRetrieve(true, false);
             manager.setLoginCallback(loginCallback);
@@ -218,4 +199,20 @@ public class RobovmLauncher extends IOSApplication.Delegate implements GPGSInter
 			}
 		}
 	};
+
+
+	@Override
+	public ArrayList<GPGAchievementMetadata> getAchievements() {
+		return manager.getAchievementsList();
+	}
+
+	@Override
+	public void getScoresOfLeaderboard(String leaderboardId, boolean social, GPGLeaderboardTimeScope timeScope, ScoresLoaded callback) {
+		manager.getScoresOfLeaderboard(leaderboardId, social, timeScope, callback);
+	}
+
+	@Override
+	public ArrayList<GPGLeaderboardMetadata> getLeaderboards() {
+		return manager.getLeaderboardsList();
+	}
 }

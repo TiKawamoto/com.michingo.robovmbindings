@@ -1,5 +1,7 @@
 package com.michingo.robovmbindings.gpgs.libgdx;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -10,6 +12,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.michingo.robovmbindings.gpgs.GPGAchievementMetadata;
+import com.michingo.robovmbindings.gpgs.GPGLeaderboardMetadata;
+import com.michingo.robovmbindings.gpgs.GPGLeaderboardTimeScope;
+import com.michingo.robovmbindings.gpgs.GPGScore;
+import com.michingo.robovmbindings.playservices.PlayServicesManager.ScoresLoaded;
 
 public class MyGame implements ApplicationListener {
 	private OrthographicCamera camera;
@@ -67,8 +74,48 @@ public class MyGame implements ApplicationListener {
 			@Override
 			public boolean touchUp(int screenX, int screenY, int pointer,
 					int button) {
-				System.out.println("Starting login flow.");
-				gpgs.login();
+				
+				//just some screen locations to test. 
+				//Press at the left to login.
+				//Press at the right to list achievements and scores of a particular leaderboard.
+				if (screenX < 160){
+					System.out.println("Starting login flow.");
+					gpgs.login();
+				}else{
+					
+					System.out.println("Examples of listing data like achievements, leaderboards and scores:");
+					
+					//example of listing achievements
+					System.out.println("Listing achievements:");
+					ArrayList<GPGAchievementMetadata> data = gpgs.getAchievements();
+					for(int i=0;i<data.size();i++){
+						GPGAchievementMetadata meta = data.get(i);
+						System.out.println(meta.achievementId()+", "+meta.achievementDescription());
+					}
+					
+					//example of listing leaderboards
+					System.out.println("Listing achievements:");
+					ArrayList<GPGLeaderboardMetadata> lead = gpgs.getLeaderboards();
+					for(int i=0;i<lead.size();i++){
+						GPGLeaderboardMetadata meta = lead.get(i);
+						System.out.println(meta.leaderboardId()+", "+meta.title());
+					}
+					
+					//example of listing scores
+					if (lead.size() > 0){
+						String id = lead.get(0).leaderboardId();
+						System.out.println("Listing scores of leaderboard: "+id);
+						gpgs.getScoresOfLeaderboard(id, false, GPGLeaderboardTimeScope.GPGLeaderboardTimeScopeAllTime, new ScoresLoaded() {
+							@Override
+							public void invoke(ArrayList<GPGScore> scores) {
+								for(int i=0;i<scores.size();i++){
+									GPGScore s = scores.get(i);
+									System.out.println(s.rank()+"  "+s.displayName()+": "+s.value());
+								}
+							}
+						});
+					}
+				}
 				return false;
 			}
 
