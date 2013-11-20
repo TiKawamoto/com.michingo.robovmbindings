@@ -7,6 +7,7 @@ import com.michingo.robovmbindings.other.NSData;
 import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
+import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIViewController;
 import org.robovm.objc.ObjCClass;
 
@@ -39,6 +40,7 @@ import com.michingo.robovmbindings.gpgs.GPGScore;
 import com.michingo.robovmbindings.gpgs.GPGScoreReport;
 import com.michingo.robovmbindings.gpgs.GPGScoreReportScoreBlock;
 import com.michingo.robovmbindings.gpgs.GPGToastPlacement;
+import com.michingo.robovmbindings.gpp.GPPShare;
 import com.michingo.robovmbindings.gpp.GPPSignIn;
 import com.michingo.robovmbindings.gpp.GPPSignInDelegate;
 import com.michingo.robovmbindings.gt.GTMOAuth2Authentication;
@@ -55,8 +57,6 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	public static final int DATA_ID = 2;
 	
 	//identifiers
-	private ArrayList<String> ach_ids;
-	private ArrayList<String> lead_ids;
 	private String clientId;
 	
 	//view controller
@@ -273,22 +273,6 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		}else{
 			return GPGManager.sharedInstance().hasAuthorizer();
 		}
-	}
-	
-	/** Call this to pass your achievement identifiers. 
-	 * @param achievements an ArrayList containing your identifiers. You can find the identifiers in the Google Play Developers Console. 
-	 * @deprecated you no longer need to pass identifiers. */
-	@Deprecated
-	public void provideAchievementIdentifiers(ArrayList<String> achievements){
-		this.ach_ids = achievements;
-	}
-	
-	/** Call this to pass your leaderboard identifiers. 
-	 * @param achievements an ArrayList containing your identifiers. You can find the identifiers in the Google Play Developers Console. 
-	 * @deprecated you no longer need to pass identifiers. */
-	@Deprecated
-	public void provideLeaderboardIdentifiers(ArrayList<String> leaderboards){
-		this.lead_ids = leaderboards;
 	}
 	
 	/** Call this to pass your client identifier. 
@@ -558,5 +542,81 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		
 		//load the scores
 		b.loadScoresWithCompletionHandler(loadScoresBlock);
+	}
+	
+	//share dialog
+	/**
+	 * the most basic way to open the share dialog
+	 */
+	public void gppShare_openBasicShareDialog(){
+		GPPShare.sharedInstance().shareDialog().open();
+	}
+	
+	/**
+	 * Sets the URL resource to be shared. and opens the dialog
+	 * 
+	 * @param the url the user will be directed to when clicking through
+	 */
+	public void gppShare_setURLToShareAndOpen(String urlToShare){
+		GPPShare.sharedInstance().shareDialog().setURLToShare(new NSURL(urlToShare)).open();
+	}
+	
+	/**
+	 * Sets the text to prefill user's comment in the share dialog. and opens the dialog
+	 * 
+	 * @param the prefilled coment that wil be displayd on the google plus wall
+	 */
+	public void gppShare_setPrefillTextAndOpen(String prefillText){
+		GPPShare.sharedInstance().shareDialog().setPrefillText(new NSString(prefillText)).open();
+	}
+	
+	/**
+	 *  Sets the title, description, and thumbnail URL of the shared content preview
+     * in the share dialog. Only set these fields if you are sharing with a content
+     * deep link and don't have a URL resource. |title| is required.
+	 * @param title
+	 * @param description
+	 * @param thumbnailURL
+	 */
+	public void gppShare_setTitleAndOpen(String title, String description, String thumbnailURL){
+		GPPShare.sharedInstance().shareDialog().setTitle(new NSString(title), new NSString(description), new NSURL(thumbnailURL)).open();
+	}
+	
+	/**
+	 *  Sets the content deep-link ID that takes the user straight to your shared
+     * content. Only set this field if you want the content deep-linking feature.
+     * The content deep-link ID can either be a fully qualified URI, or URI path,
+     * which can be up to 512 characters in length.
+	 * @param title
+	 * @param description
+	 * @param thumbnailURL
+	 * @param contentDeepLinkID
+	 */
+	public void gppShare_setTitleDeepLinkAndOpen(String title, String description, String thumbnailURL, String contentDeepLinkID){
+		GPPShare.sharedInstance().shareDialog().setTitle(new NSString(title), new NSString(description), new NSURL(thumbnailURL))
+		.setContentDeepLinkID(new NSString(contentDeepLinkID))
+		.open();	
+	}
+	
+	/**
+	 *  Sets the call-to-action button of the shared content preview.
+	 * The call-to-action button consists of a label, URL, and deep-link ID.
+	 * The |label| is a string key defined under "data-calltoactionlabel" on
+	 * http://developers.google.com/+/web/share/interactive#button_attr_calltoactionlabel
+	 * that maps to the actual button text.
+	 * The |url| is where the user is taken to after tapping on the button.
+	 * The optional |deepLinkID| is the call-to-action deep-link ID that takes the
+	 * user straight to a specific action in your app. It can either be a fully
+	 * qualified URI, or URI path, which can be up to 512 characters in length.
+	 * Note: In order to set the call-to-action button:
+	 * User must have been authenticated with scopes including
+     * "https://www.googleapis.com/auth/plus.login".
+	 * @param label
+	 * @param urlToShare
+	 * @param contentDeepLinkID
+	 */
+	public void gppShare_setCallToActionButtonWithLabel(String label, String urlToShare, String contentDeepLinkID){
+		GPPShare.sharedInstance().shareDialog().setURLToShare(new NSURL(urlToShare))
+		.setCallToActionButtonWithLabel(new NSString(label), new NSURL(urlToShare), new NSString(contentDeepLinkID)).open();
 	}
 }

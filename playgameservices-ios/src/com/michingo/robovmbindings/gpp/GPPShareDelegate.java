@@ -18,6 +18,7 @@ public class GPPShareDelegate extends NSObject{
 		ObjCRuntime.bind(GPPShareDelegate.class);
 	}
 	
+	
 	// Reports the status of the share action.  |error| is nil upon success.  This callback takes
 	// preference over |finishedSharing:|.  You should implement one of these.
 	//- (void)finishedSharingWithError:(NSError *)error;

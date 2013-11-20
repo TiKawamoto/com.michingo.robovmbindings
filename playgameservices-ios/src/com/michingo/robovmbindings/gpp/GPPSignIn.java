@@ -3,6 +3,7 @@ package com.michingo.robovmbindings.gpp;
 import org.robovm.cocoatouch.foundation.NSArray;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
+import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.objc.ObjCClass;
 import org.robovm.objc.ObjCRuntime;
 import org.robovm.objc.Selector;
@@ -71,7 +72,7 @@ public class GPPSignIn extends NSObject{
 	private static final Selector userID$ = Selector.register("userID");
 	@Bridge private native static NSString objc_getUserId(GPPSignIn __self__, Selector __cmd__);
     public NSString getUserId(){
-    	return objc_getUserId(this, idToken$);
+    	return objc_getUserId(this, userID$);
     }
 	
 	// The Google user's email. It is only available if |shouldFetchGoogleUserEmail|
@@ -268,12 +269,11 @@ public class GPPSignIn extends NSObject{
 	// |GPPSignIn| handled this URL.
 	// Also see |handleURL:sourceApplication:annotation:| in |GPPURLHandler|.
 	//- (BOOL)handleURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation;
-	//TODO: implement
-	/*private static final Selector handleURL$ = Selector.register("handleURL:");
-	@Bridge private native static boolean objc_trySilentAuthentication(GPPSignIn __self__, Selector __cmd__, NSURL sourceApplication, String sourceApplication);
-	public boolean handleURL() {
-		return objc_handleURL(this, handleURL$);
-	}*/
+	private static final Selector handleURL$ = Selector.register("handleURL:sourceApplication:annotation:");
+	@Bridge private native static boolean objc_handleURL(GPPSignIn __self__, Selector __cmd__, NSURL url, NSString sourceApplication, NSObject annotation);
+	public boolean handleURL(NSURL url, String sourceApplication, NSObject annotation) {
+		return objc_handleURL(this, handleURL$, url, new NSString(sourceApplication), annotation);
+	}
 	
 	// Removes the OAuth 2.0 token from the keychain.
 	//- (void)signOut;
