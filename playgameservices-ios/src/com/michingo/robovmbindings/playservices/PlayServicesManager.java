@@ -434,6 +434,19 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		model.loadForKey(stateKey, resultHandler, conflictHandler);
 	}
 	
+	/** Clears data at google.
+	 * @param stateKey your state slot. Can be: 0, 1, 2, 3.
+	 * @param conflictHandler handler that defines what to do when a conflict occured. It is very important for the user experience to implement this correctly.
+	 * @param resultHandler handler that is invoked to inform you whether it is succeeded or not. If it succeeded, the handler will also contain the data that you requested. */
+	public void cloudClear(int stateKey, GPGAppStateConflictHandler conflictHandler, GPGAppStateWriteResultHandler resultHandler){
+		
+		//get the model
+		final GPGAppStateModel model = GPGManager.sharedInstance().applicationModel().appState();
+		
+		//clear the state
+		model.clearForKey(stateKey, resultHandler, conflictHandler);
+	}
+	
 	/** Retrieves data about the local player. 
 	 * @param dataType the data that you want. Choose from DATA_NAME, DATA_AVATAR and DATA_ID. These values are available as static members of PlayServicesManager. */
 	public String getUserData(int dataType){
