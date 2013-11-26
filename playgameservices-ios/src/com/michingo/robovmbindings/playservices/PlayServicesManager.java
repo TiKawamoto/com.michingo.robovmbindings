@@ -1,7 +1,6 @@
 package com.michingo.robovmbindings.playservices;
 
 import java.util.ArrayList;
-
 import org.robovm.cocoatouch.foundation.NSArray;
 import com.michingo.robovmbindings.other.NSData;
 import org.robovm.cocoatouch.foundation.NSError;
@@ -10,7 +9,6 @@ import org.robovm.cocoatouch.foundation.NSString;
 import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIViewController;
 import org.robovm.objc.ObjCClass;
-
 import com.michingo.robovmbindings.gpgs.GPGAchievement;
 import com.michingo.robovmbindings.gpgs.GPGAchievementController;
 import com.michingo.robovmbindings.gpgs.GPGAchievementControllerDelegate;
@@ -83,8 +81,9 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	}
 	
 	/** interface to get a callback when the login finished. */
-	public interface LoginSucceeded{
-		public void invoke();
+	public interface LoginCallback{
+		public void success();
+		public void error(NSError error);
 	};
 	
 	/** interface to get a callback when the scores have loaded. */
@@ -111,7 +110,7 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		}
 	};
 	
-	private LoginSucceeded loginSuccess;
+	private LoginCallback loginCallback;
 	private ScoresLoaded scoresLoaded;
 	
 	/** Call this in your app's didFinishLaunching() method. You must specify your clientID and, if you need user data, what data to load during login before calling this. */
@@ -192,10 +191,16 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 			startGoogleGamesSignIn();
 			
 			//invoke the callback if it is set.
-			if (loginSuccess != null){
-				loginSuccess.invoke();
+			if (loginCallback != null){
+				loginCallback.success();
 			}
 		}else{
+			
+			//invoke the callback if it is set.
+			if (loginCallback != null){
+				loginCallback.error(error);
+			}
+			
 			System.out.println("error during login: "+error.description());
 		}
 	}
@@ -247,14 +252,14 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	
 	/** Sets a callback that will be invoked when the user is logged in successfully.
 	 * @param callback the callback. */
-	public void setLoginCallback(LoginSucceeded callback){
-		loginSuccess = callback;
+	public void setLoginCallback(LoginCallback callback){
+		loginCallback = callback;
 	}
 	
 	/** Logs you in into Google Play Game Services using the 'games' and 'appstate' scopes. 
 	 * Only call this when the user pressed a designated login button. */
-	public void login(LoginSucceeded callback){
-		loginSuccess = callback;
+	public void login(LoginCallback callback){
+		loginCallback = callback;
 		GPPSignIn.sharedInstance().authenticate();
 	}
 	

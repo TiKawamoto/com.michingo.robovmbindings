@@ -1,6 +1,7 @@
 package com.michingo.robovmbindings.playservices;
 
 import org.robovm.cocoatouch.foundation.NSAutoreleasePool;
+import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIApplication;
@@ -12,7 +13,7 @@ import org.robovm.cocoatouch.uikit.UIWindow;
 
 import com.michingo.robovmbindings.gpgs.GPGToastPlacement;
 import com.michingo.robovmbindings.gpp.GPPURLHandler;
-import com.michingo.robovmbindings.playservices.PlayServicesManager.LoginSucceeded;
+import com.michingo.robovmbindings.playservices.PlayServicesManager.LoginCallback;
 
 public class Sample extends UIApplicationDelegate.Adapter{
 	
@@ -21,10 +22,14 @@ public class Sample extends UIApplicationDelegate.Adapter{
 	private UIViewController viewController;
 	private UIView view;
 	
-	private LoginSucceeded loginCallback = new LoginSucceeded(){
+	private LoginCallback loginCallback = new LoginCallback(){
 		@Override
-		public void invoke() {
+		public void success() {
 			//load savegame from the cloud, load achievement list etc...
+		}
+		@Override
+		public void error(NSError error) {
+			
 		}
     };
 	
