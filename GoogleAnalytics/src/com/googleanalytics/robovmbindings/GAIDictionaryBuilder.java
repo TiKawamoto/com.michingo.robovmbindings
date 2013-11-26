@@ -1,6 +1,5 @@
 package com.googleanalytics.robovmbindings;
 
-import org.robovm.cocoatouch.foundation.NSDictionary;
 import org.robovm.cocoatouch.foundation.NSMutableDictionary;
 import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;
@@ -183,8 +182,8 @@ public class GAIDictionaryBuilder extends NSObject{
 	@Bridge private native static GAIDictionaryBuilder objc_createExceptionWithDescription(ObjCClass __self__, Selector __cmd__,
 			NSString description, NSNumber fatal);
 	/** Returns a GAIDictionaryBuilder object with parameters specific to an exception hit. */
-	public static GAIDictionaryBuilder createExceptionWithDescription(NSString description, NSNumber fatal){
-		return objc_createExceptionWithDescription(objCClass, createExceptionWithDescription$, description, fatal);
+	public static GAIDictionaryBuilder createExceptionWithDescription(String description, boolean fatal){
+		return objc_createExceptionWithDescription(objCClass, createExceptionWithDescription$, new NSString(description), NSNumber.valueOf(fatal));
 	}
 	
 

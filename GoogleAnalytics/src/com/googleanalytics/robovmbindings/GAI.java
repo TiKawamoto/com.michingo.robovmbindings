@@ -55,6 +55,13 @@ public class GAI extends NSObject{
     	return objc_setLogger(this, logger$, logger);
     }
 	
+	//@property(nonatomic, assign) NSTimeInterval dispatchInterval;
+	/*private static final Selector setDispatchInterval$ = Selector.register("setDispatchInterval:");
+	@Bridge private native static void objc_setDispatchInterval(GAI __self__, Selector __cmd__, NSTimeInterval dispatchInterval);
+	public void setDispatchInterval(NSTimeInterval dispatchInterval){
+    	objc_setDispatchInterval(this, setDispatchInterval$, dispatchInterval);
+    }*/
+	
 	//@property(nonatomic, assign) BOOL optOut;
 	private static final Selector optOut$ = Selector.register("optOut");
 	@Bridge private native static boolean objc_optOut(GAI __self__, Selector __cmd__);
@@ -125,12 +132,17 @@ public class GAI extends NSObject{
 	public boolean dryRun(){
     	return objc_dryRun(this, dryRun$);
     }
+	private static final Selector setDryRun$ = Selector.register("setDryRun:");
+	@Bridge private native static void objc_setDryRun(GAI __self__, Selector __cmd__, boolean dryRun);
+	public void setDryRun(boolean dryRun){
+    	objc_setDryRun(this, setDryRun$, dryRun);
+    }
 	
 	//+ (GAI *)sharedInstance;
 	private static final Selector sharedInstance$ = Selector.register("sharedInstance");
 	@Bridge private native static GAI objc_sharedInstance(ObjCClass __self__, Selector __cmd__);
 	/** Get the shared instance of the Google Analytics for iOS class. */
-	public static GAI getSharedInstance() {
+	public static GAI sharedInstance() {
 		return objc_sharedInstance(objCClass, sharedInstance$);
 	}
 	
