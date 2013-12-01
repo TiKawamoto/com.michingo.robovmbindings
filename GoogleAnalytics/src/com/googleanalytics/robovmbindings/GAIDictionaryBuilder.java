@@ -172,7 +172,7 @@ public class GAIDictionaryBuilder extends NSObject{
 	/** Returns a GAIDictionaryBuilder object with parameters specific to an event hit. */
 	public static GAIDictionaryBuilder createEventWithCategory(String category, String action, String label, NSNumber value){
 		return objc_createEventWithCategory(objCClass, createEventWithCategory$, 
-				new NSString(category), new NSString(action), new NSString(label), value);
+				new NSString(category), new NSString(action), label!=null?new NSString(label):null, value);
 	}
 	
 
@@ -200,7 +200,7 @@ public class GAIDictionaryBuilder extends NSObject{
 	/** Returns a GAIDictionaryBuilder object with parameters specific to an item hit. */
 	public static GAIDictionaryBuilder createItemWithTransactionId(
 			NSString transactionId, NSString name, NSString sku, NSString category, NSNumber price, NSNumber quantity, NSString currencyCode){
-		return objc_createItemWithTransactionId(objCClass, createExceptionWithDescription$, 
+		return objc_createItemWithTransactionId(objCClass, createItemWithTransactionId$, 
 				transactionId, name, sku, category, price, quantity, currencyCode);
 	}
 	
@@ -243,6 +243,6 @@ public class GAIDictionaryBuilder extends NSObject{
 	/** Returns a GAIDictionaryBuilder object with parameters specific to a transaction hit.*/
 	public static GAIDictionaryBuilder createTransactionWithId(
 			NSString transactionId, NSString affiliation, NSNumber revenue, NSNumber tax, NSNumber shipping, NSString currencyCode){
-		return objc_createTransactionWithId(objCClass, createTimingWithCategory$, transactionId, affiliation, revenue, tax, shipping, currencyCode);
+		return objc_createTransactionWithId(objCClass, createTransactionWithId$, transactionId, affiliation, revenue, tax, shipping, currencyCode);
 	} 
 }

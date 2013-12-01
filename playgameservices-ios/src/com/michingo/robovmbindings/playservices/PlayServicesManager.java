@@ -120,6 +120,7 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	    
 	    //set scopes
 	    ArrayList<NSString> scopes = new ArrayList<NSString>();
+	    scopes.add(new NSString("https://www.googleapis.com/auth/plus.login"));
 		scopes.add(new NSString("https://www.googleapis.com/auth/games"));
 		scopes.add(new NSString("https://www.googleapis.com/auth/appstate"));
 	    signIn.setScopes(new NSArray<NSString>(scopes));

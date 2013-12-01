@@ -2,40 +2,44 @@ package com.michingo.robovmbindings.gpp;
 
 import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSObject;
-import org.robovm.objc.ObjCClass;
-import org.robovm.objc.ObjCRuntime;
+import org.robovm.cocoatouch.foundation.NSObjectProtocol;
 import org.robovm.objc.Selector;
+import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.NativeClass;
-import org.robovm.rt.bro.annotation.Bridge;
+import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Library;
 
 @Library(Library.INTERNAL)
 @NativeClass()
-public class GPPShareDelegate extends NSObject{
-	private static final ObjCClass objCClass = ObjCClass.getByType(GPPShareDelegate.class);
+public interface GPPShareDelegate extends NSObjectProtocol{
+	
+	public void finishedSharingWithError(NSError error);
+	public void finishedSharing(boolean shared);
+	
+	/** Extend this adapter to listen for events triggered by a GPPShare. */
+	public static class Adapter extends NSObject implements GPPShareDelegate {
+		@Override
+		public void finishedSharingWithError(NSError error) {
+			
+		}
 
-	static {
-		ObjCRuntime.bind(GPPShareDelegate.class);
+		@Override
+		public void finishedSharing(boolean shared) {
+			
+		}
 	}
 	
-	
-	// Reports the status of the share action.  |error| is nil upon success.  This callback takes
-	// preference over |finishedSharing:|.  You should implement one of these.
-	//- (void)finishedSharingWithError:(NSError *)error;
-	private static final Selector finishedSharingWithError$ = Selector.register("finishedSharingWithError:");
-    @Bridge private native static void objc_finishedSharingWithError(GPPShareDelegate __self__, Selector __cmd__, NSError error);
-    public void finishedSharingWithError(NSError error){
-    	objc_finishedSharingWithError(this, finishedSharingWithError$, error);
-    }
-	
-
-	// Reports the status of the share action, |shared| is |YES| if user has successfully shared her
-	// post, |NO| otherwise, such as if the user canceled the post.  This callback is superseded by
-	// |finishedSharingWithError:|.  You should implement one of these.
-	//- (void)finishedSharing:(BOOL)shared;
-    private static final Selector finishedSharing$ = Selector.register("finishedSharing:");
-    @Bridge private native static void objc_finishedSharing(GPPShareDelegate __self__, Selector __cmd__, boolean shared);
-    public void finishedSharing(boolean shared){
-    	objc_finishedSharing(this, finishedSharing$, shared);
-    }
+	static class Callbacks {
+		@Callback
+		@BindSelector("finishedSharingWithError:")
+		public static void objc_finishedSharingWithError(GPPShareDelegate __self__, Selector __cmd__, NSError error){
+			__self__.finishedSharingWithError(error);
+		}
+		
+		@Callback
+		@BindSelector("finishedSharing:")
+		public static void objc_finishedSharing(GPPShareDelegate __self__, Selector __cmd__, boolean shared){
+			__self__.finishedSharing(shared);
+		}
+	}
 }

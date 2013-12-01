@@ -61,12 +61,11 @@ public class GPPShare extends NSObject{
 	// Before the native share dialog can be opened, the user must have consented to the OAuth2 scope
 	// "https://www.googleapis.com/auth/plus.login".
 	//- (id<GPPShareBuilder>)nativeShareDialog;
-	//TODO implement
-//	private static final Selector nativeShareDialog$ = Selector.register("nativeShareDialog");
-//	@Bridge private native static GPPNativeShareBuilderImpl objc_getNativeShareDialog(GPPShare __self__, Selector __cmd__);
-//	public GPPNativeShareBuilderImpl getNativeShareDialog() {
-//		return objc_getNativeShareDialog(this, nativeShareDialog$);
-//	}
+	private static final Selector nativeShareDialog$ = Selector.register("nativeShareDialog");
+	@Bridge private native static GPPNativeShareBuilderImpl objc_getNativeShareDialog(GPPShare __self__, Selector __cmd__);
+	public GPPNativeShareBuilderImpl getNativeShareDialog() {
+		return objc_getNativeShareDialog(this, nativeShareDialog$);
+	}
 	
 
 	// Closes the active native share dialog immediately, if one exists.
