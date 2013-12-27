@@ -97,6 +97,13 @@ public class GPGLeaderboard extends NSObject{
 		objc_loadPreviousPageOfScoresWithCompletionHandler(this, loadPreviousPageOfScoresWithCompletionHandler$, completionHandler);
 	}
 	
+	//- (void)resetScoreWithCompletionHandler:(GPGScoreResetBlock)completionHandler;
+	private static final Selector resetScoreWithCompletionHandler$ = Selector.register("resetScoreWithCompletionHandler:");
+	@Bridge private native static void objc_resetScoreWithCompletionHandler(GPGLeaderboard __self__, Selector __cmd__, GPGScoreResetBlock completionHandler);
+	public void resetScoreWithCompletionHandler(GPGScoreResetBlock completionHandler) {
+		objc_resetScoreWithCompletionHandler(this, resetScoreWithCompletionHandler$, completionHandler);
+	}
+	
 	//- (BOOL)isLoading;
 	private static final Selector isLoading$ = Selector.register("isLoading:");
 	@Bridge private native static boolean objc_isLoading(GPGLeaderboard __self__, Selector __cmd__);

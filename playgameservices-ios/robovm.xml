@@ -19,6 +19,7 @@
   </resources>
 	<!-- Add these frameworks to your RoboVM project. -->
 	<frameworks>
+	    <framework>AddressBook</framework>
 		<framework>AssetsLibrary</framework>
 		<framework>CoreData</framework>
 		<framework>CoreLocation</framework>

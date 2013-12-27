@@ -53,6 +53,18 @@ public class GPGScore extends NSObject{
     	objc_setValue(this, setValue$, value);
     }
 	
+	//@property (nonatomic, readwrite, copy) NSString *scoreTag;
+	private static final Selector scoreTag$ = Selector.register("scoreTag");
+	@Bridge private native static String objc_scoreTag(GPGScore __self__, Selector __cmd__);
+	public String scoreTag(){
+    	return objc_scoreTag(this, scoreTag$);
+    }
+	private static final Selector setScoreTag$ = Selector.register("setScoreTag:");
+	@Bridge private native static long objc_setScoreTag(GPGScore __self__, Selector __cmd__, NSString tag);
+	public void setScoreTag(NSString tag){
+    	objc_setScoreTag(this, setScoreTag$, tag);
+    }
+	
 	//- (BOOL)submitScoreWithCompletionHandler:(GPGScoreReportScoreBlock)completionHandler;
 	private static final Selector submitScoreWithCompletionHandler$ = Selector.register("submitScoreWithCompletionHandler:");
 	@Bridge private native static boolean objc_submitScoreWithCompletionHandler(GPGScore __self__, Selector __cmd__, GPGScoreReportScoreBlock completionHandler);
@@ -121,5 +133,12 @@ public class GPGScore extends NSObject{
 	@Bridge private native static long objc_writeTimestamp(GPGScore __self__, Selector __cmd__);
     public long writeTimestamp(){
     	return objc_writeTimestamp(this, writeTimestamp$);
+    }
+    
+    //@property (nonatomic, readonly, copy) NSString *timeSpan;
+    private static final Selector timeSpan$ = Selector.register("timeSpan");
+	@Bridge private native static String objc_timeSpan(GPGScore __self__, Selector __cmd__);
+    public String timeSpan(){
+    	return objc_timeSpan(this, timeSpan$);
     }
 }

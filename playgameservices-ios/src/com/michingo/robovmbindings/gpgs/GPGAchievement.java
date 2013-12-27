@@ -99,4 +99,18 @@ public class GPGAchievement extends NSObject{
 	public void incrementAchievementNumSteps(int steps, GPGAchievementDidIncrementBlock completionHandler) {
 		objc_incrementAchievementNumSteps(this, incrementAchievementNumSteps$, steps, completionHandler);
 	}
+	
+	//- (void)resetAchievementWithCompletionHandler:(GPGAchievementDidResetBlock)completionHandler;
+	private static final Selector resetAchievementWithCompletionHandler$ = Selector.register("resetAchievementWithCompletionHandler:");
+	@Bridge private native static void objc_resetAchievementWithCompletionHandler(GPGAchievement __self__, Selector __cmd__, GPGAchievementDidResetBlock completionHandler);
+	public void resetAchievementWithCompletionHandler(GPGAchievementDidResetBlock completionHandler) {
+		objc_resetAchievementWithCompletionHandler(this, resetAchievementWithCompletionHandler$, completionHandler);
+	}
+	
+	//+ (void)resetAllAchievementsWithCompletionHandler: (GPGAllAchievementsDidResetBlock)completionHandler;
+	private static final Selector resetAllAchievementsWithCompletionHandler$ = Selector.register("resetAllAchievementsWithCompletionHandler:");
+	@Bridge private native static void objc_resetAllAchievementsWithCompletionHandler(ObjCClass __self__, Selector __cmd__, GPGAllAchievementsDidResetBlock completionHandler);
+	public static void resetAllAchievementsWithCompletionHandler(GPGAllAchievementsDidResetBlock completionHandler) {
+		objc_resetAllAchievementsWithCompletionHandler(objCClass, resetAllAchievementsWithCompletionHandler$, completionHandler);
+	}
 }

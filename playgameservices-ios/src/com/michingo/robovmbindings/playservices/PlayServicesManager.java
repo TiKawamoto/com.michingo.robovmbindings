@@ -1,14 +1,26 @@
 package com.michingo.robovmbindings.playservices;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.robovm.cocoatouch.foundation.NSArray;
+
 import com.michingo.robovmbindings.other.NSData;
+import com.michingo.robovmbindings.other.NSNotification;
+import com.michingo.robovmbindings.other.NSNotificationCenter;
+
 import org.robovm.cocoatouch.foundation.NSError;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
 import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIViewController;
 import org.robovm.objc.ObjCClass;
+import org.robovm.objc.Selector;
+import org.robovm.objc.annotation.BindSelector;
+import org.robovm.objc.annotation.CustomClass;
+import org.robovm.rt.bro.annotation.Callback;
+
 import com.michingo.robovmbindings.gpgs.GPGAchievement;
 import com.michingo.robovmbindings.gpgs.GPGAchievementController;
 import com.michingo.robovmbindings.gpgs.GPGAchievementControllerDelegate;
@@ -18,6 +30,7 @@ import com.michingo.robovmbindings.gpgs.GPGAchievementDidUnlockBlock;
 import com.michingo.robovmbindings.gpgs.GPGAchievementMetadata;
 import com.michingo.robovmbindings.gpgs.GPGAchievementModel;
 import com.michingo.robovmbindings.gpgs.GPGAchievementState;
+import com.michingo.robovmbindings.gpgs.GPGAllAchievementsDidResetBlock;
 import com.michingo.robovmbindings.gpgs.GPGAppStateConflictHandler;
 import com.michingo.robovmbindings.gpgs.GPGAppStateLoadResultHandler;
 import com.michingo.robovmbindings.gpgs.GPGAppStateModel;
@@ -45,6 +58,7 @@ import com.michingo.robovmbindings.gt.GTMOAuth2Authentication;
 
 /** Manager that handles the most common usage of Google Play Game Services. 
  * @author Michael Hadash */
+@CustomClass("PlayServicesManager")
 public class PlayServicesManager extends NSObject implements GPPSignInDelegate, GPGAchievementControllerDelegate, GPGLeaderboardControllerDelegate, GPGLeaderboardsControllerDelegate {
 	
 	public static final int TOAST_WELCOME = 0;
@@ -113,8 +127,24 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	private LoginCallback loginCallback;
 	private ScoresLoaded scoresLoaded;
 	
+	private Selector userDidSignOutSelector = Selector.register("userDidSignOut:");
+
+	private static GPGAchievementController achController;
+    
+    @Callback @BindSelector("userDidSignOut:")
+    /** Called when the user signed out somewhere in Google's interface. */
+    private static void userDidSignOut(NSNotification notification){
+    	//sign out completely
+    	achController.getAchievementDelegate().achievementViewControllerDidFinish(achController);
+		achController.beginAppearanceTransition(false, true);
+		achController = null;
+	}
+	
 	/** Call this in your app's didFinishLaunching() method. You must specify your clientID and, if you need user data, what data to load during login before calling this. */
 	public void didFinishLaunching(){
+		//set the sign out observer
+		NSNotificationCenter.defaultCenter().addObserver(this, userDidSignOutSelector, "GPGUserDidSignOutNotification");
+		
 		GPPSignIn signIn = GPPSignIn.sharedInstance();
 	    signIn.setClientID(clientId);
 	    
@@ -231,6 +261,7 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	@Override
 	public void achievementViewControllerDidFinish(GPGAchievementController viewController) {
 		viewController.dismissViewController(true, null);
+		achController = null;
 	}
 	
 	/** Do not use this. This could not be a private member, but do as if it doesn't exists. */
@@ -322,9 +353,30 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 	
 	/** Pops the achievements view controller. This displays all the achievements and the user's progress. */
 	public void showAchievements(){
-		GPGAchievementController achController = new GPGAchievementController();
+		achController = new GPGAchievementController();
 		achController.setAchievementDelegate(this);
 		viewController.presentViewController(achController, true, null);
+		loginStateTimer();
+	}
+	
+	private Timer t = new Timer();
+	private void loginStateTimer(){
+		t.schedule(new TimerTask(){
+			@Override
+			public void run() {
+				if (isLoggedIn()){
+					if (achController != null){
+						loginStateTimer();
+					}
+				}else{
+					if (achController != null){
+						achController.getAchievementDelegate().achievementViewControllerDidFinish(achController);
+						achController.beginAppearanceTransition(false, true);
+						achController = null;
+					}
+				}
+			}
+		}, 3000);
 	}
 	
 	/** @return an ArrayList containing all data about your achievements and your user's progress. */
@@ -561,6 +613,18 @@ public class PlayServicesManager extends NSObject implements GPPSignInDelegate, 
 		
 		//load the scores
 		b.loadScoresWithCompletionHandler(loadScoresBlock);
+	}
+	
+	/** Attempts to reset all achievements. */
+	public void resetAllAchievements(){
+		if (isLoggedIn()){
+			GPGAchievement.resetAllAchievementsWithCompletionHandler(new GPGAllAchievementsDidResetBlock() {
+				@Override
+				public void invoke(NSError error) {
+					System.out.println("reset achievements! error: "+error.toString());
+				}
+			});
+		}
 	}
 	
 	//share dialog
